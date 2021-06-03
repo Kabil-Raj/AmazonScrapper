@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/Kabil-Raj/datamodel"
@@ -68,8 +69,9 @@ func getProductDetails(productUrl string) {
 		fmt.Println("Visiting", r.URL)
 	})
 
-	c.OnHTML("#dpx-product-description_feature_div", func(e *colly.HTMLElement) {
-		productDescription = e.DOM.Find("#productDescription").Find("p").Text()
+	c.OnHTML("#productDescription", func(e *colly.HTMLElement) {
+		productDescription = strings.TrimSpace(e.DOM.Children().Text())
+		fmt.Println(len(e.DOM.Children().Text()))
 	})
 
 	c.OnHTML("#acrCustomerReviewText", func(e *colly.HTMLElement) {
