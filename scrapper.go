@@ -51,6 +51,8 @@ func main() {
 
 func getProductDetails(productUrl string) {
 
+	datamodel.ConnectMySql()
+
 	var productName string
 
 	var productImageUrl string
