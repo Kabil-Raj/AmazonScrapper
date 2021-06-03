@@ -7,16 +7,17 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/Kabil-Raj/datamodel"
+
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gocolly/colly/v2"
 	"github.com/gorilla/mux"
-	model "sellerapp.assignment/datahandler"
 )
 
 func homePage(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Welcome to the HomePage!")
 	fmt.Println("Endpoint Hit: homePage")
-
+	datamodel.Sample()
 }
 
 func handleRequests() {
@@ -47,9 +48,7 @@ func scrapAmazonProduct(w http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
-	model.Sample()
 	handleRequests()
-
 }
 
 func getProductDetails(productUrl string) {
