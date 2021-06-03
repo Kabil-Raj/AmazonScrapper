@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/Kabil-Raj/datamodel"
-
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gocolly/colly/v2"
 	"github.com/gorilla/mux"
@@ -17,7 +16,7 @@ import (
 func homePage(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Welcome to the HomePage!")
 	fmt.Println("Endpoint Hit: homePage")
-	datamodel.Sample()
+
 }
 
 func handleRequests() {
@@ -44,7 +43,6 @@ func scrapAmazonProduct(w http.ResponseWriter, req *http.Request) {
 	getProductDetails(productUrl)
 	fmt.Println("Endpoint Hit : return product details")
 	json.NewEncoder(w).Encode(ProductDetails)
-
 }
 
 func main() {
@@ -109,6 +107,8 @@ func getProductDetails(productUrl string) {
 	ProductDetails = []ProductDetail{
 		{ProductName: productName, ProductImageUrl: productImageUrl, ProductDescription: productDescription, ProductPrice: productPrice, ProductReviews: productReviews, CreatedAt: time.Now()},
 	}
+
+	datamodel.Sample(productName, productImageUrl, productDescription, productPrice, productReviews, time.Now())
 
 }
 
