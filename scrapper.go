@@ -46,12 +46,11 @@ func scrapAmazonProduct(w http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
+	datamodel.ConnectMySql()
 	handleRequests()
 }
 
 func getProductDetails(productUrl string) {
-
-	datamodel.ConnectMySql()
 
 	var productName string
 
@@ -110,8 +109,7 @@ func getProductDetails(productUrl string) {
 		{ProductName: productName, ProductImageUrl: productImageUrl, ProductDescription: productDescription, ProductPrice: productPrice, ProductReviews: productReviews, CreatedAt: time.Now()},
 	}
 
-	datamodel.Sample(productName, productImageUrl, productDescription, productPrice, productReviews, time.Now())
-
+	datamodel.SaveData(productName, productImageUrl, productDescription, productPrice, productReviews, time.Now())
 }
 
 func getProductImage(imgSource string, isProductImage bool) (soruce string) {
