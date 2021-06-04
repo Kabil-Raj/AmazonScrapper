@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Kabil-Raj/datamodel"
+	datamodel "github.com/Kabil-Raj/datamodel"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gocolly/colly/v2"
 	"github.com/gorilla/mux"
