@@ -123,7 +123,7 @@ func getProductDetails(productUrl string) {
 		fmt.Println(err.Error())
 	}
 
-	http.Post("http://localhost:10001/scrapData", "application/json", bytes.NewBuffer(json_data))
+	http.Post("http://localhost:8082/scrapData", "application/json", bytes.NewBuffer(json_data))
 
 }
 
