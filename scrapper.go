@@ -47,6 +47,7 @@ func scrapAmazonProduct(w http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
+
 	datamodel.ConnectMySql()
 	handleRequests()
 }
@@ -107,6 +108,7 @@ func getProductDetails(productUrl string) {
 
 	c.Visit(productUrl)
 
+	fmt.Println(productName)
 	ProductDetails = []ProductDetail{
 		{ProductName: productName, ProductImageUrl: productImageUrl, ProductDescription: productDescription, ProductPrice: productPrice, ProductReviews: productReviews, CreatedAt: time.Now()},
 	}
