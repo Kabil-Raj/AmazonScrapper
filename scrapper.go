@@ -1,14 +1,13 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"strings"
-	"time"
 
-	datamodel "github.com/Kabil-Raj/datamodel"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gocolly/colly/v2"
 	"github.com/gorilla/mux"
@@ -28,18 +27,16 @@ func handleRequests() {
 }
 
 type ProductDetail struct {
-	ProductName        string    `json:"ProductName"`
-	ProductImageUrl    string    `json:"ProductImageUrl"`
-	ProductDescription string    `json:"ProductDescription"`
-	ProductPrice       string    `json:"ProductPrice"`
-	ProductReviews     string    `json:"ProductReviews"`
-	CreatedAt          time.Time `json:"CreatedAt"`
+	ProductName        string `json:"ProductName"`
+	ProductImageUrl    string `json:"ProductImageUrl"`
+	ProductDescription string `json:"ProductDescription"`
+	ProductPrice       string `json:"ProductPrice"`
+	ProductReviews     string `json:"ProductReviews"`
 }
 
 var ProductDetails []ProductDetail
 
 func scrapAmazonProduct(w http.ResponseWriter, req *http.Request) {
-
 	productUrl := req.URL.Query().Get("url")
 	getProductDetails(productUrl)
 	fmt.Println("Endpoint Hit : return product details")
@@ -48,7 +45,6 @@ func scrapAmazonProduct(w http.ResponseWriter, req *http.Request) {
 
 func main() {
 
-	datamodel.ConnectMySql()
 	handleRequests()
 }
 
@@ -110,10 +106,25 @@ func getProductDetails(productUrl string) {
 
 	fmt.Println(productName)
 	ProductDetails = []ProductDetail{
-		{ProductName: productName, ProductImageUrl: productImageUrl, ProductDescription: productDescription, ProductPrice: productPrice, ProductReviews: productReviews, CreatedAt: time.Now()},
+		{ProductName: productName, ProductImageUrl: productImageUrl, ProductDescription: productDescription, ProductPrice: productPrice, ProductReviews: productReviews},
 	}
 
-	datamodel.SaveData(productName, productImageUrl, productDescription, productPrice, productReviews, time.Now())
+	productData := map[string]string{
+		"ProductName":        productName,
+		"ProductImageUrl":    productImageUrl,
+		"ProductDescription": productDescription,
+		"ProductPrice":       productPrice,
+		"ProductReviews":     productReviews,
+	}
+
+	json_data, err := json.Marshal(productData)
+
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	http.Post("http://localhost:10001/scrapData", "application/json", bytes.NewBuffer(json_data))
+
 }
 
 func getProductImage(imgSource string, isProductImage bool) (soruce string) {
