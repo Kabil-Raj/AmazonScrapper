@@ -13,34 +13,16 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func homePage(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Welcome to the HomePage!")
-	fmt.Println("Endpoint Hit: homePage")
-
-}
-
 func handleRequests() {
 	myRouter := mux.NewRouter().StrictSlash(true)
-	myRouter.HandleFunc("/home", homePage)
 	myRouter.HandleFunc("/scrapproduct", scrapAmazonProduct).Methods("POST")
 	log.Fatal(http.ListenAndServe(":10000", myRouter))
 }
-
-type ProductDetail struct {
-	ProductName        string `json:"ProductName"`
-	ProductImageUrl    string `json:"ProductImageUrl"`
-	ProductDescription string `json:"ProductDescription"`
-	ProductPrice       string `json:"ProductPrice"`
-	ProductReviews     string `json:"ProductReviews"`
-}
-
-var ProductDetails []ProductDetail
 
 func scrapAmazonProduct(w http.ResponseWriter, req *http.Request) {
 	productUrl := req.URL.Query().Get("url")
 	getProductDetails(productUrl)
 	fmt.Println("Endpoint Hit : return product details")
-	json.NewEncoder(w).Encode(ProductDetails)
 }
 
 func main() {
@@ -78,7 +60,7 @@ func getProductDetails(productUrl string) {
 	c.OnHTML("#desktop_unifiedPrice", func(e *colly.HTMLElement) {
 		// normal amazon price
 		e.DOM.Find("#priceblock_ourprice").Each(func(i int, s *goquery.Selection) {
-			productPrice = s.Text()
+			productPrice = strings.TrimPrefix(s.Text(), "₹")
 		})
 		// deal price
 		e.DOM.Find("#priceblock_dealprice").Each(func(i int, s *goquery.Selection) {
@@ -104,11 +86,6 @@ func getProductDetails(productUrl string) {
 
 	c.Visit(productUrl)
 
-	fmt.Println(productName)
-	ProductDetails = []ProductDetail{
-		{ProductName: productName, ProductImageUrl: productImageUrl, ProductDescription: productDescription, ProductPrice: productPrice, ProductReviews: productReviews},
-	}
-
 	productData := map[string]string{
 		"ProductName":        productName,
 		"ProductImageUrl":    productImageUrl,
@@ -123,7 +100,7 @@ func getProductDetails(productUrl string) {
 		fmt.Println(err.Error())
 	}
 
-	http.Post("http://localhost:8082/scrapData", "application/json", bytes.NewBuffer(json_data))
+	http.Post("http://app:10001/scrapData", "application/json", bytes.NewBuffer(json_data))
 
 }
 
